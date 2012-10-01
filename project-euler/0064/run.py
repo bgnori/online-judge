@@ -35,13 +35,14 @@ def opB(base, q_n, p_npp):
     (8, 4)
     >>> opB(23, 0, 1)
     (4, 4)
+    >>> opB(2, 0, 1)
+    (1, 1)
+    >>> opB(3, 0, 1)
+    (1, 1)
     """
     assert p_npp > 0
     assert q_n >= 0
-    for i in range(base):
-        if base < pow(i * p_npp - q_n, 2):
-            break
-    a = i - 1
+    a = int((pow(base, 0.5)+q_n)/p_npp)
     return a, a * p_npp - q_n  #a_(n+1), q_(n+1)
 
 
@@ -65,25 +66,30 @@ def step(base, p_n, q_n):
     >>> step(23, 7, 4)
     (8, 1, 4)
     '''
-    assert p_n, q_n > 0
+    assert p_n > 0
+    assert q_n > 0
     p_npp = opA(base, p_n, q_n)
     assert p_npp > 0
     a, q_npp = opB(base, q_n, p_npp)
-    assert a, q_npp > 0
+    assert a > 0
+    assert q_npp > 0
     return a, p_npp, q_npp
+
 
 def cf(base):
     """
     >>> cf(2)
-    (1,(2,))
+    (1, (2,))
     >>> cf(3)
-    (1,(1,2))
+    (1, (1, 2))
     >>> cf(5)
-    (2,(4,))
+    (2, (4,))
     >>> cf(6)
-    (2,(2,4))
+    (2, (2, 4))
+    >>> cf(11)
+    (3, (3, 6))
     >>> cf(23)
-    (4,(1,3,1,8))
+    (4, (1, 3, 1, 8))
     """
     an = []
     pq = []
@@ -92,16 +98,15 @@ def cf(base):
     p = 1
     a, q = opB(base, 0, p)
     an.append(a)
-    pq.append((p, q))
-    print a, p, q
-    for i in range(6):
-        p, q = pq[i]
+    assert p > 0
+    assert q > 0
+    while (p, q) not in pq:
+        pq.append((p, q))
         a, p, q = step(base, p, q)
         an.append(a)
-        pq.append((p, q))
-    print an, pq
+    return an[0], tuple(an[1:len(pq)+1])
 
-    return 0
 
-import doctest
-doctest.testmod()
+#import doctest
+#doctest.testmod()
+
