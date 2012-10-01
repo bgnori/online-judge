@@ -39,12 +39,16 @@ def opB(base, q_n, p_npp):
     (1, 1)
     >>> opB(3, 0, 1)
     (1, 1)
+    >>> opB(9, 0, 1)
+    (3, 3)
     """
     assert p_npp > 0
     assert q_n >= 0
     a = int((pow(base, 0.5)+q_n)/p_npp)
     return a, a * p_npp - q_n  #a_(n+1), q_(n+1)
 
+class SQRTException(Exception):
+    pass
 
 def step(base, p_n, q_n):
     '''
@@ -69,6 +73,8 @@ def step(base, p_n, q_n):
     assert p_n > 0
     assert q_n > 0
     p_npp = opA(base, p_n, q_n)
+    if p_npp == 0:
+        raise SQRTException
     assert p_npp > 0
     a, q_npp = opB(base, q_n, p_npp)
     assert a > 0
@@ -86,8 +92,20 @@ def cf(base):
     (2, (4,))
     >>> cf(6)
     (2, (2, 4))
+    >>> cf(7)
+    (2, (1, 1, 1, 4))
+    >>> cf(8)
+    (2, (1, 4))
+    >>> cf(9)
+    (3, ())
+    >>> cf(10)
+    (3, (6,))
     >>> cf(11)
     (3, (3, 6))
+    >>> cf(12)
+    (3, (2, 6))
+    >>> cf(13)
+    (3, (1, 1, 1, 1, 6))
     >>> cf(23)
     (4, (1, 3, 1, 8))
     """
@@ -102,7 +120,10 @@ def cf(base):
     assert q > 0
     while (p, q) not in pq:
         pq.append((p, q))
-        a, p, q = step(base, p, q)
+        try:
+            a, p, q = step(base, p, q)
+        except SQRTException:
+            return a, tuple()
         an.append(a)
     return an[0], tuple(an[1:len(pq)+1])
 
@@ -110,3 +131,10 @@ def cf(base):
 #import doctest
 #doctest.testmod()
 
+oddie = 0
+for i in xrange(2, 10000):
+    a, xs = cf(i)
+    if len(xs) % 2:
+        oddie += 1
+
+print oddie
