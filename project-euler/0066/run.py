@@ -1,4 +1,5 @@
 
+import continuedfraction
 
 
 def isSq(n):
@@ -13,53 +14,83 @@ def isSq(n):
     d = int(pow(n, 0.5))
     return d*d == n
 
-def ujm_g(D):
-    """
-    >>> g = ujm_g(13)
-    >>> [g.next() for i in range(6)]
-    [12, 14, 25, 27, 38, 40]
-    """
-    i = 1
-    while True:
-        yield D*i - 1
-        yield D*i + 1
-        i+=1
 
-def find_y_with(y2):
-    y = int(pow(y2, 0.5))
-    return (y*y == y2) and y
+def seq_fraction(cf):
+    """
+    >>> cf = continuedfraction.cf
+    >>> g = seq_fraction(cf(2))
+    >>> [g.next() for i in range(4)]
+    [1, 2, 2, 2]
+    >>> g = seq_fraction(cf(13))
+    >>> [g.next() for i in range(11)]
+    [3, 1, 1, 1, 1, 6, 1, 1, 1, 1, 6]
 
-def solve_for(D):
+    """
+    first, period = cf
+    yield first #a0
+    pl = len(period)
     count = 0
-    for x in ujm_g(D):
-        count += 1
-        y2, m = divmod(x*x - 1, D)
-        if m:
-            continue
-        found = find_y_with(y2)
-        if found:
-            return x, found
-        if count > 1000*10000:
-            break
-    print 'problem with' ,D
-    return 0, 0
+    while True:
+        yield period[count % pl] #a1 and so on.
+        count+=1
 
 
-if False:
+def omega_app_k(nth, cft):
+    """
+    >>> omega_app_k(0, (1, (2,))) #cf(2)
+    (3, 2)
+    >>> omega_app_k(0, (1, (1, 2))) #cf(3)
+    (2, 1)
+    >>> omega_app_k(0, (2, (4,))) #cf(5)
+    (9, 4)
+    """
+    g = seq_fraction(cft)
+    xs = [g.next() for i in range(nth+2)]
+    xs.reverse()
+    n, d = 0, 1
+    for w in xs:
+        n, d = d, n+d*w
+    return d, n
+
+
+def find_x_y(D):
+    """
+    >>> find_x_y(2)
+    (3, 2)
+    >>> find_x_y(3)
+    (2, 1)
+    >>> find_x_y(5)
+    (9, 4)
+    >>> find_x_y(6)
+    (5, 2)
+    >>> find_x_y(7)
+    (8, 3)
+    """
+    cf = continuedfraction.cf(D)
+    n = 0
+    x, y = omega_app_k(0, cf)
+    while x*x - D*y*y - 1:
+        n+=1
+        x, y = omega_app_k(n, cf)
+        #print x, y, 1
+    return x, y
+
+
+if 0:
     import doctest
     doctest.testmod()
 else:
     largest = 0
-    found = None
+    found = 0
     for D in range(2, 1001):
-        if not isSq(D):
-            x, y = solve_for(D)
-            #print D, x, y
-            assert x*x - D*y*y - 1 == 0
-            if x > largest:
-                largest = x
-                found = D
+        if isSq(D):
+            continue
+        x, y = find_x_y(D)
+        if x > largest:
+            largest = x
+            found = D
     print largest
     print found
 
-
+#39480499 1248483
+#1000
