@@ -35,11 +35,15 @@ if False:
     doctest.testmod()
 else:
     m = 0
+    mx = ''
     for i in range(1, 10):
-        for j in range(2, 10):
+        for j in range(1, 10):
             xs = concatenated(i, range(1, j+1))
             if pandigital(xs):
                 k = str(xs)
                 if m < k:
                     m = k
+                    mx = i, range(1, j+1)
     print m 
+    print mx
+

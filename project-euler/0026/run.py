@@ -19,12 +19,14 @@ def frac(n):
     ((), (1,))
     >>> frac(10)
     ((1,), ())
+    >>> frac(101)
+    ((0, 0), (9,))
     """
     r = []
     m = 1 
     m = m*10
     d, m = divmod(m, n)
-    while d not in r:
+    while d not in r or (d == 0 and m != 0):
         r.append(d)
         m = m*10
         d, m = divmod(m, n)
@@ -40,19 +42,18 @@ def frac(n):
             break;
     return tuple(fixpart), tuple(looppart)
 
-#import doctest
-#doctest.testmod()
-
-m = 0
-for i in range(2, 1000):
-    _, recuuring = frac(i)
-    n = len(recuuring)
-    if m <= n:
-        m = n
-        j = i
-print j, m
-print frac(j)
-
-
-
-
+if False:
+    import doctest
+    doctest.testmod()
+else:
+    m = 0
+    for i in range(2, 1000):
+        _, recuuring = frac(i)
+        n = len(recuuring)
+        if m <= n:
+            print i
+            m = n
+            j = i
+    print j, m
+    print frac(j)
+ 

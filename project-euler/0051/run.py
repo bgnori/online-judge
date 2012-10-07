@@ -58,41 +58,36 @@ def encode(n):
 
     return tuple(r)
 
+def make_from(s, i):
+    """
+    >>> make_from('AA231', 1)
+    11231
+    """
+    return int(s.replace('A', str(i)))
 
 if False:
     import doctest
     doctest.testmod()
 else:
     import sys
-    libpe.primehelper.pomp2bound(int(sys.argv[1]))
-    print libpe.primehelper.count
-    d = {}
+    libpe.primehelper.pomp2nth(int(sys.argv[1]))
+    print 'primes', libpe.primehelper.count
     for p in libpe.primehelper.primes:
         ens = encode(p)
         if ens:
             for en in ens:
-                v = d.get(en, None)
-                if v is None:
-                    v = []
-                v.append(p)
-                d[en] = v
-
-    print len(d)
-    longest_len = 0
-    longest_list = []
-    longest_en = ''
-    for k, v in d.iteritems():
-        #print k, v, len(v)
-        vlen = len(v)
-        if vlen == 8:
-            print k
-            print v
-        if vlen > longest_len:
-            longest_len = vlen
-            longest_list = v
-            longest_en = k
-
-    print longest_len
-    print longest_en
-    print longest_list
+                #print 
+                count = 0
+                for i in range(10):
+                    n = make_from(en, i)
+                    if libpe.primehelper.isprime(n):
+                        count += 1
+                        #print n,
+                if count > 7:
+                    print
+                    print 'found!'
+                    print p
+                    sys.exit()
+    print
+    print 'not found...'
 

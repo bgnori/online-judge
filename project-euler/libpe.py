@@ -93,6 +93,14 @@ class _PrimeHelper:
         while self.known_lagest()*self.known_lagest() < n:
             self.pomp.next()
 
+    def pomp2nth(self, nth):
+        while self.count < nth:
+            self.pomp.next()
+
+    def pomp2bound(self, bound):
+        while self.known_lagest() < bound:
+            self.pomp.next()
+
     def isprime(self, n):
         '''
         >>> p = _PrimeHelper()

@@ -1,8 +1,3 @@
-
-
-
-
-
 def palindrome(s):
     if not s:
         return True
