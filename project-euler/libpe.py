@@ -10,6 +10,7 @@ def permutation(xs):
             for p in permutation(xs[:i]+xs[i+1:]):
                 yield x+p
 
+
 class SeqHolder:
     """
     >>> p = SeqHolder(lambda n: n*(3*n-1)/2)
@@ -55,6 +56,7 @@ class SeqHolder:
             self.max += 1
             v = self.f(self.max)
             self.memo.add(v)
+
 
 class _PrimeHelper:
     '''
@@ -153,10 +155,10 @@ class _PrimeHelper:
         r = set()
         d = self.decompose(n)
         v = len(d)
-        for i in range(pow(2, v)):
+        for i in xrange(pow(2, v)):
             mask = 1
             x = 1
-            for j in range(v):
+            for j in xrange(v):
                 if mask & i:
                     x *= d[j]
                 mask *=2
@@ -201,6 +203,7 @@ class _PrimeHelper:
         if n == self.d(candidate) and not (candidate == n):
             return candidate
         return None
+
 
 primehelper = _PrimeHelper()
 
