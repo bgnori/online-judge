@@ -132,14 +132,22 @@ class _PrimeHelper:
         >>> p.decompose(284)
         [2, 2, 71]
         '''
+
         self.extend(n)
         r = []
-        for p in self.primes:
+        def foo(n, p):
             d, m = divmod(n, p)
             while m == 0:
                 n = d
                 r.append(p)
                 d, m = divmod(n, p)
+            return n, d==0
+
+        for p in self.primes:
+            n, flag = foo(n, p)
+            if flag:
+                break
+
         if n != 1:
             #fixd bug in 0012
             r.append(n)
