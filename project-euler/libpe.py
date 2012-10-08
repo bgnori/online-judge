@@ -10,6 +10,33 @@ def permutation(xs):
             for p in permutation(xs[:i]+xs[i+1:]):
                 yield x+p
 
+def combination(xs):
+    """
+    >>> list(combination([(3, 1)])) #?!
+    [(0,), (1,)]
+    >>> list(combination([(2, 1), (3, 1)])) #?!
+    [(0, 0), (1, 0), (0, 1), (1, 1)]
+    >>> list(combination([(3, 0)])) 
+    [(0,)]
+    >>> list(combination([])) 
+    [[]]
+    """
+    v = len(xs)
+    if v==0:
+        yield []
+        raise StopIteration
+    com = [0 for i in range(v)]
+    h = reduce(lambda x, y : x*y,  map(lambda ab : ab[1]+1, xs), 1)
+    for count in xrange(h):
+        yield tuple(com)
+        com[0] += 1
+        for i in range(v):
+            if com[i] > xs[i][1]: #carry up
+                com[i] = 0
+                if i+1 >= v:
+                    raise StopIteration
+                com[i+1] += 1
+
 
 class SeqHolder:
     """
@@ -131,6 +158,8 @@ class _PrimeHelper:
         [(2, 2), (5, 1), (11, 1)]
         >>> p.decompose(284)
         [(2, 2), (71, 1)]
+        >>> p.decompose(1)
+        []
         '''
         self.extend(n)
         r = []
@@ -155,19 +184,18 @@ class _PrimeHelper:
         >>> p = _PrimeHelper()
         >>> p.divisors(28)
         set([1, 2, 4, 7, 14, 28])
+        >>> p.divisors(3)
+        set([1, 3])
+        >>> p.divisors(1)
+        set([1])
         '''
-
         r = set()
         d = self.decompose(n)
-        v = len(d)
-        for i in xrange(pow(2, v)):
-            mask = 1
-            x = 1
-            for j in xrange(v):
-                if mask & i:
-                    x *= d[j]
-                mask *=2
-            r.add(x)
+        for xs in combination(d):
+            k = 1
+            for i, x in enumerate(xs):
+                k *= pow(d[i][0], x)
+            r.add(k)
         return r
 
     def proper_divisors(self, n):
@@ -177,6 +205,8 @@ class _PrimeHelper:
         set([1, 2, 4, 7, 14])
         >>> sorted(list(p.proper_divisors(220)))
         [1, 2, 4, 5, 10, 11, 20, 22, 44, 55, 110]
+        >>> p.proper_divisors(5)
+        set([1])
         '''
         s = self.divisors(n)
         s.remove(n)
