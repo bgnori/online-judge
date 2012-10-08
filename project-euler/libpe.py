@@ -124,33 +124,30 @@ class _PrimeHelper:
         '''
         >>> p = _PrimeHelper()
         >>> p.decompose(60)
-        [2, 2, 3, 5]
+        [(2, 2), (3, 1), (5, 1)]
         >>> p.decompose(3)
-        [3]
+        [(3, 1)]
         >>> p.decompose(220)
-        [2, 2, 5, 11]
+        [(2, 2), (5, 1), (11, 1)]
         >>> p.decompose(284)
-        [2, 2, 71]
+        [(2, 2), (71, 1)]
         '''
-
         self.extend(n)
         r = []
-        def foo(n, p):
+        for p in self.primes:
             d, m = divmod(n, p)
+            t = 0
             while m == 0:
                 n = d
-                r.append(p)
+                t+=1
                 d, m = divmod(n, p)
-            return n, d==0
-
-        for p in self.primes:
-            n, flag = foo(n, p)
-            if flag:
+            if t:
+                r.append((p, t))
+            if d == 0:
                 break
-
         if n != 1:
             #fixd bug in 0012
-            r.append(n)
+            r.append((n, 1))
         return r
 
     def divisors(self, n):
