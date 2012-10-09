@@ -38,5 +38,18 @@ no-if/with-ith
 """
 count < 500
   3199661    0.567    0.000    0.567    0.000 {divmod} (with-if)
-  3199661    0.656    0.000    0.656    0.000 {divmod}
+  3199661    0.656    0.000    0.656    0.000 {divmod} foo
+  3199661    0.559    0.000    0.559    0.000 {divmod} undo
+  3209085    0.567    0.000    0.567    0.000 {divmod} if/while
+
+"""
+"""
+initial: 9.073 CPU sec
+    12375 2.233 0.000 3.600 0.000 run.py:50(decompose)
+    12375 4.594 0.000 9.031 0.001 run.py:68(divisors)
+
+after:  5.737 CPU sec
+   562549    1.260    0.000    1.527    0.000 libpe.py:13(combination)
+    12375    1.425    0.000    2.040    0.000 libpe.py:150(decompose)
+    12375    1.697    0.000    5.696    0.000 libpe.py:182(divisors)
 """
