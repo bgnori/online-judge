@@ -38,17 +38,22 @@ merge xs ys
     where 
         hhx = head $ head xs 
         hhy = head $ head ys  
-        hlx = head $ last xs
-        hly = head $ last ys
+        hlx = last $ head xs
+        hly = last $ head ys
 
+-- >>> merge [[2,1],[3,1]] [[2,1]]
+-- expected: [[2,1],[3,1]]
+-- got: [[2,3],[3,1]]
 
 components :: Int -> [[Int]]
 components k 
     | k == 1 = []
-    | k > 0 = merge (components (k-1)) (decompose k)
+    | k > 1 = merge (components (k-1)) (decompose k)
+
 
 power :: [Int] -> Int
 power xs = head xs ^ last xs
+
 
 -- main = print $ foo 10 1000 -- False
 -- main = print $ foo 10 2520 -- True
@@ -57,12 +62,16 @@ power xs = head xs ^ last xs
 -- main = print $ and $ map (> 10) [1,2,3,4,5]
 -- main = print $ decompose 1001
 -- main = print $ decompose 1
--- main = print $ decompose 9
+-- main = print $ decompose 720
 -- main = print $ 2 ** 10
 -- main = print $ 2 ^^ 10
 -- main = print $ 2 ^ 10
-main = print $ components 4
+-- main = print $ components 6
+-- main = print $ decompose 6
+-- main = print $ merge (decompose 6) (decompose 2)
+-- main = print $ merge [[2,1],[3,1]] [[2,1]]
 -- main = print $ foldl (*) 1 [1..10]
--- main = print $ foldl (*) 1 $ map power $ components 20
+main = print $ foldl (*) 1 $ map power $ components 20
+-- expceted: 232792560
 
 
